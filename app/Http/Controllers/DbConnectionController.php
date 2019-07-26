@@ -16,7 +16,8 @@ use Illuminate\Http\Request;
 
 class DbConnectionController extends BaseController
 {
-    protected $_diverType = ['MySQL', "POSTGRESQL"];
+    protected $_diverType = ['MySQL'];
+//    protected $_diverType = ['MySQL', "PGSQL"];
 
     public function index(Request $request)
     {

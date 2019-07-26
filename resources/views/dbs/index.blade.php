@@ -6,8 +6,16 @@
             <div class="ibox-title form-inline">
                 <form action="">
                     <div class="form-group col-sm-4">
+                        <label class="control-label">连接名</label>
+                        <select name="conn_name" class="form-control">
+                            @foreach($conns as $conn)
+                                <option @if($conn->conn_name == $conn_name) selected @endif value="{{$conn->conn_name}}">{{$conn->conn_name}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group col-sm-4">
                         <label for="name" class="">数据库名称：</label>
-                        <input type="text" class="form-control" name="schema_name" value="{{$search['schema_name']}}" placeholder="请输入数据库名称">
+                        <input type="text" class="form-control" name="schema_name" value="{{$search['schema_name']??""}}" placeholder="请输入数据库名称">
                     </div>
                     <input type="submit" class="btn btn-info" value="查询">
                 </form>
@@ -35,7 +43,7 @@
                             <td>{{$item->DEFAULT_COLLATION_NAME}}</td>
                             <td class="text-center">
                                 <div class="btn-group">
-                                    <a href="{{route('dbs.tables',['db' => $item->SCHEMA_NAME])}}"><button class="btn btn-primary btn-xs" type="button"><i class="fa fa-paste"></i> 查看表结构</button></a>
+                                    <a href="{{route('dbs.tables',['db' => $item->SCHEMA_NAME,'conn_name'=>$conn_name])}}"><button class="btn btn-primary btn-xs" type="button"><i class="fa fa-paste"></i> 查看表结构</button></a>
                                 </div>
                             </td>
                         </tr>

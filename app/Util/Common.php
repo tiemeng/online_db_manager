@@ -1,6 +1,6 @@
 <?php
 /**
- * Created by PhpStorm.
+ * 公共方法类
  * User: tiemeng
  * Date: 2019/7/25
  * Time: 15:51

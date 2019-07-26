@@ -9,14 +9,19 @@ use App\Models\DbInfo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-
+/**
+ * 数据变更申请
+ * @package App\Http\Controllers
+ */
 class DataChangeController extends BaseController
 {
 
-    private $_db_type = ['MYSQL', 'POSTGRESQL', "ORACLE"];
+//    private $_db_type = ['MYSQL', 'PGSQL'];
+    private $_db_type = ['MYSQL'];
     private $_status = [1 => '待审核', '审核通过', '驳回', '已执行'];
 
     /**
+     * 申请列表
      * @param Request $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
@@ -35,6 +40,7 @@ class DataChangeController extends BaseController
     }
 
     /**
+     * 添加页面
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function create()
@@ -43,6 +49,7 @@ class DataChangeController extends BaseController
     }
 
     /**
+     * 添加数据
      * @param ApplyRequest $request
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -66,6 +73,7 @@ class DataChangeController extends BaseController
 
 
     /**
+     * 编辑页面
      * @param $id
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
@@ -81,6 +89,7 @@ class DataChangeController extends BaseController
     }
 
     /**
+     * 更新数据
      * @param ApplyRequest $request
      * @param $id
      * @return \Illuminate\Http\RedirectResponse
@@ -107,6 +116,7 @@ class DataChangeController extends BaseController
 
 
     /**
+     * 申请审核
      * @param Request $request
      * @return false|string
      */
@@ -128,11 +138,22 @@ class DataChangeController extends BaseController
         }
     }
 
+    /**
+     * 通过驱动获取所有的数据库
+     * @param string $driver
+     * @return array
+     */
     public function getDbs(string $driver){
         $list = DbConnection::getDBByDriver($driver);
         return $this->reJson(200,'success',$list);
     }
 
+    /**
+     * 获取所有的表明
+     * @param string $conn
+     * @param string $db
+     * @return array
+     */
     public function getTables(string $conn,string $db){
         $dbInfo = new DbInfo($conn);
         return $this->reJson(200,'success',$dbInfo->getTablesByDb($db));

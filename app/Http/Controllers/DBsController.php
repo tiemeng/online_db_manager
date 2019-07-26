@@ -9,34 +9,43 @@
 namespace App\Http\Controllers;
 
 
-use App\Models\DBs;
+use App\Models\DbConnection;
+use App\Models\DbInfo;
 use Illuminate\Http\Request;
 
 class DBsController extends BaseController
 {
     public function index(Request $request)
     {
-        $search = [
-            'schema_name' => $request->schema_name
-        ];
-        $dbs = DBs::getDBs($search);
-
-        return view('dbs.index', ['dbs' => $dbs,'search'=>$search]);
-    }
-
-    public function tables(Request $request){
-        $db = $request->db;
-        $tables = DBs::getTables($db);
-        $tablesInfo = [];
-        foreach ($tables as $table){
-            $tablesInfo[$table->table_name] = DBs::tablesInfo($db,$table->table_name);
+        $search = [];
+        $conn_name = $request->conn_name;
+        $schema_name = $request->schema_name;
+        $conn = DbConnection::getList([]);
+        if (!$conn_name) {
+            $conn_name = $conn[0]->conn_name;
         }
-        return view("dbs.tables",['db'=>$db,'tables'=>$tables,"tablesInfo"=>$tablesInfo]);
+        if ($schema_name) {
+            $search = ['schema_name' => $schema_name];
+        }
+
+        $dbinfoModel = new DbInfo($conn_name);
+        $dbs = $dbinfoModel->getDbsByConnection($search);
+
+        return view('dbs.index', ['dbs' => $dbs, 'search' => $search, 'conns' => $conn, 'conn_name' => $conn_name]);
     }
 
-    public function getDbs(Request $request){
-        $type = $request->type;
-
+    public function tables(Request $request)
+    {
+        $db = $request->db;
+        $conn_name = $request->conn_name;
+        $dbInfoModel = new DbInfo($conn_name);
+        $tables = $dbInfoModel->getTables($db);
+        $tablesInfo = [];
+        foreach ($tables as $table) {
+            $tablesInfo[$table->table_name] = $dbInfoModel->tablesInfo($db, $table->table_name);
+        }
+        return view("dbs.tables", ['db' => $db, 'tables' => $tables, "tablesInfo" => $tablesInfo]);
     }
+
 
 }

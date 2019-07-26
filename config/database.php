@@ -68,6 +68,18 @@ return [
             'strict' => true,
             'engine' => null,
             'schema' => ''
+        ],        "deposit_uat"=> [
+            'driver' => 'pgsql',
+            'host' => '47.92.87.56',
+            'port' => '5432',
+            'database' => 'deposit',
+            'username' => 'rock_uat',
+            'password' => 'rock_uat_pwd',
+            'charset' => 'utf8',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+            'schema' => ''
         ],
 
 

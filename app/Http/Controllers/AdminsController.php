@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Admin\AdminRequest;
-use Illuminate\Http\Request;
 use App\Services\AdminsService;
 use App\Repositories\RolesRepository;
 use App\Http\Requests\Admin\AdminLoginRequest;
 
+/**
+ * 后台用户管理
+ * @package App\Http\Controllers
+ */
 class AdminsController extends BaseController
 {
     protected $adminsService;
@@ -27,6 +30,7 @@ class AdminsController extends BaseController
     }
 
     /**
+     * 管理员列表
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index()
@@ -36,6 +40,7 @@ class AdminsController extends BaseController
     }
 
     /**
+     * 添加管理员页面
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function create()
@@ -46,6 +51,7 @@ class AdminsController extends BaseController
     }
 
     /**
+     * 添加数据
      * @param AdminRequest $request
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -60,6 +66,7 @@ class AdminsController extends BaseController
 
 
     /**
+     * 编辑页面
      * @param $id
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
@@ -73,6 +80,7 @@ class AdminsController extends BaseController
     }
 
     /**
+     * 更新数据
      * @param AdminRequest $request
      * @param $id
      * @return \Illuminate\Http\RedirectResponse
@@ -87,6 +95,7 @@ class AdminsController extends BaseController
     }
 
     /**
+     * 删除数据
      * @param $id
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -113,6 +122,7 @@ class AdminsController extends BaseController
     }
 
     /**
+     * 状态更新
      * @param $status
      * @param $id
      * @return \Illuminate\Http\RedirectResponse
