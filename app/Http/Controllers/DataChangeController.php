@@ -6,6 +6,8 @@ use App\Http\Requests\Admin\ApplyRequest;
 use App\Models\DataChange;
 use App\Models\DbConnection;
 use App\Models\DbInfo;
+use App\Util\Common;
+use App\Util\ResQueue;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -132,6 +134,8 @@ class DataChangeController extends BaseController
             $updateData = ['status' => $status, 'audit_uid' => $admin->id];
             $where = ['id' => $id];
             DataChange::updateData($updateData, $where);
+            $msg = $status == 2 ? "你的sql申请已审核通过" : "你的sql申请被驳回";
+            Common::applyNotice($admin->email,$admin->name,$msg);
             return $this->reJson(200,'审核成功');
         } catch (\Exception $e) {
             return $this->reJson(102,'审核失败');
@@ -159,4 +163,38 @@ class DataChangeController extends BaseController
         return $this->reJson(200,'success',$dbInfo->getTablesByDb($db));
 
     }
+
+    /**
+     * 执行sql
+     * @param Request $request
+     * @return array
+     * @throws \Exception
+     */
+    public function exec(Request $request){
+        $id = $request->id;
+        $info = DataChange::getInfoById($id);
+        if(empty($info)){
+            return $this->reJson(101,'数据不存在');
+        }
+        $conn_name = $info->conn_name;
+        $dbInfoModel = new DbInfo($conn_name,$info->db_name);
+        $admin = Auth::guard('admin')->user();
+        try{
+            $sql = $info->exc_sql;
+            $res = $dbInfoModel->exec($sql);
+            if($res){
+                DataChange::updateData(['status'=>4],['id'=>$id]);
+                Common::applyNotice($admin->email,$admin->name,"你申请的sql已经处理完成");
+                return $this->reJson(200,'执行成功');
+            }
+
+            return $this->reJson(101,'执行失败');
+        }catch (\Exception $e){
+            DataChange::updateData(['status'=>1,'fail_reason'=>$e->getMessage()],['id'=>$id]);
+            Common::applyNotice($admin->email,$admin->name,"你申请的sql处理失败，请重新编辑。失败原因：".$e->getMessage());
+            return $this->reJson(101,$e->getMessage());
+        }
+
+    }
+
 }

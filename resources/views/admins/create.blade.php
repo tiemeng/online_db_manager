@@ -32,6 +32,16 @@
                     </div>
                     <div class="hr-line-dashed m-t-sm m-b-sm"></div>
                     <div class="form-group">
+                        <label class="col-sm-2 control-label">邮箱：</label>
+                        <div class="input-group col-sm-2">
+                            <input type="text" class="form-control" name="email" required data-msg-required="请输入邮箱">
+                            @if ($errors->has('email'))
+                                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>{{$errors->first('email')}}</span>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed m-t-sm m-b-sm"></div>
+                    <div class="form-group">
                         <label class="col-sm-2 control-label">所属角色：</label>
                         <div class="input-group col-sm-2">
                             @foreach($roles as $k=>$item)

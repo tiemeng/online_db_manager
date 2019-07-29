@@ -17,13 +17,14 @@ use Illuminate\Http\Request;
 class DbConnectionController extends BaseController
 {
     protected $_diverType = ['MySQL'];
+
 //    protected $_diverType = ['MySQL', "PGSQL"];
 
     public function index(Request $request)
     {
         $driver = $request->driver;
         $where = [];
-        if($driver){
+        if ($driver) {
             $where['driver'] = $driver;
         }
         $list = DbConnection::getList($where);
@@ -34,20 +35,22 @@ class DbConnectionController extends BaseController
         ];
         return $this->view(null, $data);
     }
+
     public function create()
     {
         return $this->view(null, ['driver' => $this->_diverType]);
     }
 
-    public function store(DbConn $request){
-        try{
+    public function store(DbConn $request)
+    {
+        try {
             $requestData = $request->all();
             unset($requestData['_token']);
             $requestData['driver'] = strtolower($requestData['driver']);
             !DbConnection::insertData($requestData) && DbConnection::insertData($requestData);
             flash('添加成功')->success()->important();
             Common::updateDatabaseFile();
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             flash($e->getMessage())->success()->important();
         }
 
@@ -61,7 +64,8 @@ class DbConnectionController extends BaseController
         return $this->view(null, ['info' => $info, 'driver' => $this->_diverType]);
     }
 
-    public function update(DbConn $request,$id){
+    public function update(DbConn $request, $id)
+    {
         try {
             $updateData = [
                 'conn_name' => $request->conn_name,

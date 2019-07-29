@@ -37,6 +37,7 @@ Route::middleware(['auth:admin','rbac'])->group(function (){
     Route::post('datachange/status','DataChangeController@status')->name('datachange.status');
     Route::post('datachange/dbs/{driver?}','DataChangeController@getDbs')->name('datachange.dbs');
     Route::post('datachange/tables/{conn?}/{db?}','DataChangeController@getTables')->name('datachange.tables');
+    Route::post('datachange/exec','DataChangeController@exec')->name('datachange.exec');
 
     Route::get("DBs/index","DBsController@index")->name("dbs.list");
     Route::get("DBs/tables","DBsController@tables")->name("dbs.tables");

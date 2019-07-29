@@ -15,13 +15,18 @@ class DbInfo extends Model
 {
     protected $_db = null;
 
-    public function __construct(string $connection, array $attributes = [])
+    public function __construct(string $connection, $db = 'information_schema', array $attributes = [])
     {
-        \Config::set('database.connections.' . $connection . '.database', 'information_schema');
+        \Config::set('database.connections.' . $connection . '.database', $db);
         $this->_db = \DB::connection($connection);
         parent::__construct($attributes);
     }
 
+    /**
+     * 通过数据库获取所有的表
+     * @param string $db
+     * @return array
+     */
     public function getTablesByDb(string $db)
     {
 
@@ -31,6 +36,11 @@ class DbInfo extends Model
         return array_column($list, "table_name");
     }
 
+    /**
+     * 通过连接名获取所有的数据库
+     * @param array $where
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
     public function getDbsByConnection(array $where = [])
     {
         $dbs = $this->_db->table('SCHEMATA')
@@ -46,6 +56,11 @@ class DbInfo extends Model
         return $dbs;
     }
 
+    /**
+     * 获取所有的表明
+     * @param string $db
+     * @return array
+     */
     public function getTables(string $db)
     {
         return $this->_db->table("tables")->where(['table_schema' => $db])->select([
@@ -54,6 +69,12 @@ class DbInfo extends Model
         ])->get()->toArray();
     }
 
+    /**
+     * 获取表的结构
+     * @param string $db
+     * @param string $table
+     * @return \Illuminate\Support\Collection
+     */
     public function tablesInfo(string $db, string $table)
     {
         return $this->_db->table("COLUMNS")->where([
@@ -67,5 +88,20 @@ class DbInfo extends Model
             "COLUMN_default",
             "column_comment"
         ])->get();
+    }
+
+    /**
+     * 执行相对应的sql
+     * @param string $sql
+     * @return bool
+     * @throws \Exception
+     */
+    public function exec(string $sql)
+    {
+        try {
+            return $this->_db->statement($sql);
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
+        }
     }
 }

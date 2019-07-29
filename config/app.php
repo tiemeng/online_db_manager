@@ -168,7 +168,7 @@ return [
          * Package Service Providers...
          */
         #excel
-        Maatwebsite\Excel\ExcelServiceProvider::class,
+//        Maatwebsite\Excel\ExcelServiceProvider::class,
         /*
          * Application Service Providers...
          */
@@ -228,7 +228,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
-        'Geetest' => Germey\Geetest\Geetest::class,
+//        'Geetest' => Germey\Geetest\Geetest::class,
     ],
 
 ];

@@ -43,7 +43,7 @@
                             <td class="text-center" >{{$item->db_type}}</td>
                             <td class="text-center">{{$item->db_name}}</td>
                             <td>{{$item->table_name}}</td>
-                            <td title="点击查看详情" data-backdrop="false"  data-toggle="modal" data-target="#myModal5">
+                            <td title="点击查看详情" data-backdrop="false"  data-toggle="modal" data-target="#myModal{{$item->id}}">
                                 {{mb_substr($item->exc_sql,0,40)}}
 
                             </td>
@@ -66,15 +66,15 @@
                                         </a>
                                     @elseif($item->status==2)
                                         {{--<a href="{{route('datachange.status',['status'=>4,$item->id])}}">--}}
-                                            <button class="btn btn-info btn-xs" id="exec" type="button"> 执行</button>
+                                            <button class="btn btn-info btn-xs" onclick="exec({{$item->id}})" id="exec" type="button"> 执行</button>
                                         {{--</a>--}}
                                     @endif
 
                                 </div>
                             </td>
                         </tr>
-                        <div class="ibox-content">
-                            <div class="modal inmodal fade" id="myModal5" tabindex="-1" role="dialog" aria-hidden="false">
+
+                            <div class="modal inmodal fade" id="myModal{{$item->id}}" tabindex="-1" role="dialog" aria-hidden="false">
                                 <div class="modal-dialog modal-lg">
                                     <div class="modal-content">
                                         <div class="modal-header" style="padding: 5px">
@@ -84,13 +84,13 @@
                                         </div>
                                         <div class="modal-body">
                                             <p>
-                                                {{$item->exc_sql}}
+                                                {!! nl2br($item->exc_sql) !!}
                                             </p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+
                     @endforeach
                     </tbody>
                 </table>
@@ -118,9 +118,23 @@
                     location.reload();
 
                 }else{
-                    layer.alert(res.msg);
+                    layer.msg(res.msg,{time:3000},function(){
+                        location.reload();
+                    });
                 }
             },"json");
+        }
+
+        function exec(id){
+            $.post('{{route('datachange.exec')}}',{id:id,_token:'{{csrf_token()}}'},function(res){
+                if(res.code == 200){
+                    location.reload();
+                }else{
+                    layer.msg(res.msg,{time:3000},function(){
+                        location.reload();
+                    });
+                }
+            },"json")
         }
         // $(function(){
         //     $("#exec").click(function(){

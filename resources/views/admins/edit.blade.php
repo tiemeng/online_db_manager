@@ -33,6 +33,16 @@
                 </div>
                 <div class="hr-line-dashed m-t-sm m-b-sm"></div>
                 <div class="form-group">
+                    <label class="col-sm-2 control-label">邮箱：</label>
+                    <div class="input-group col-sm-2">
+                        <input type="text" class="form-control" value="{{$admin->email}}" name="email">
+                        @if ($errors->has('email'))
+                            <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>{{$errors->first('email')}}</span>
+                        @endif
+                    </div>
+                </div>
+                <div class="hr-line-dashed m-t-sm m-b-sm"></div>
+                <div class="form-group">
                     <label class="col-sm-2 control-label">所属角色：</label>
                     <div class="input-group col-sm-2">
                         @php

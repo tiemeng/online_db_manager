@@ -30,12 +30,14 @@ class AdminRequest extends FormRequest
                 'password' => 'required',
                 'role_id'  => 'required:integer',
                 'status'   => 'required:integer',
+                'email'   => 'required|email',
             ];
         }else{
             return [
                 'name'     => 'required|between:3,10',
                 'role_id'  => 'required:integer',
                 'status'   => 'required:integer',
+                'email'   => 'required|email',
             ];
         }
     }
@@ -54,6 +56,8 @@ class AdminRequest extends FormRequest
             'role_id.integer'   => '表单不合法',
             'status.required'   => '状态不能为空',
             'status.integer'    => '表单不合法',
+            'email.required'    => '邮箱不能为空',
+            'email.email'    => '邮箱不正确',
         ];
     }
 }

@@ -50,7 +50,7 @@
                     <label class="col-sm-2 control-label">表名：</label>
                     <div class="col-sm-3">
                         <select  name="table_name" class="table_name form-control">
-                            <option value="" >请选择</option>
+                            <option value=" " >请选择</option>
                         </select>
                         @if ($errors->has('table_name'))
                             <span style="color: red" class="help-block m-b-none"><i class="fa fa-info-circle"></i>{{$errors->first('table_name')}}</span>

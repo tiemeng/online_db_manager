@@ -15,6 +15,11 @@ use Illuminate\Http\Request;
 
 class DBsController extends BaseController
 {
+    /**
+     * 数据库列表
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index(Request $request)
     {
         $search = [];
@@ -34,6 +39,11 @@ class DBsController extends BaseController
         return view('dbs.index', ['dbs' => $dbs, 'search' => $search, 'conns' => $conn, 'conn_name' => $conn_name]);
     }
 
+    /**
+     * 获取所有的表
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function tables(Request $request)
     {
         $db = $request->db;

@@ -75,6 +75,7 @@ class RolesController extends BaseController
     /**
      * @param Role $role
      * @return \Illuminate\Http\RedirectResponse
+     * @throws \Exception
      */
     public function destroy(Role $role)
     {

@@ -54,7 +54,7 @@
         </div>
         <div class="pull-right pagination m-t-no">
             <div class="text-center">
-                {{$dbs->links()}}
+                {{$dbs->appends(['conn_name'=>$conn_name])->links()}}
             </div>
             <div>
             </div>

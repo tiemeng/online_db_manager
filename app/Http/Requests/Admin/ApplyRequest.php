@@ -28,7 +28,7 @@ class ApplyRequest extends FormRequest
         return [
             'db_type' => 'required|between:5,20',
             'db_name' => 'required|max:40',
-            'table_name' => 'required|max:40',
+            'table_name' => 'max:40',
             'exc_sql' => 'required',
         ];
     }
@@ -40,7 +40,7 @@ class ApplyRequest extends FormRequest
             'db_type.between' => '数据库类型长度应该在5~20位之间',
             'db_name.required' => "数据库名不能为空",
             'db_name.max' => '数据库名最大不能超过40个字符',
-            'table_name.required' => "数据表名不能为空",
+//            'table_name.required' => "数据表名不能为空",
             'table_name.max' => '数据表名最大不能超过40个字符',
             'exc_sql.required' => 'SQL不能为空'
         ];
