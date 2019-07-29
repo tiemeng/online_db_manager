@@ -11,6 +11,7 @@ namespace App\Http\Controllers;
 
 use App\Models\DbConnection;
 use App\Models\DbInfo;
+use App\Util\Common;
 use Illuminate\Http\Request;
 
 class DBsController extends BaseController
@@ -54,7 +55,31 @@ class DBsController extends BaseController
         foreach ($tables as $table) {
             $tablesInfo[$table->table_name] = $dbInfoModel->tablesInfo($db, $table->table_name);
         }
-        return view("dbs.tables", ['db' => $db, 'tables' => $tables, "tablesInfo" => $tablesInfo]);
+        return view("dbs.tables",
+            ['db' => $db, 'conn_name' => $conn_name, 'tables' => $tables, "tablesInfo" => $tablesInfo]);
+    }
+
+    public function export(Request $request)
+    {
+        try{
+            $conn_name = $request->conn_name;
+            $db = $request->db;
+            $dbInfoModel = new DbInfo($conn_name);
+            $tables = $dbInfoModel->getTables($db);
+            if ($tables) {
+                $tables = array_column($tables, "table_comment",'table_name');
+            }
+            $tbInfos = [];
+            foreach ($tables as $table => $v) {
+                $tbInfos[$table] = $dbInfoModel->tablesInfo($db, $table);
+            }
+            Common::generateWord($tables, $tbInfos);
+            return $this->reJson();
+        }catch (\Exception $e){
+            return $this->reJson(101,$e->getMessage());
+        }
+
+
     }
 
 

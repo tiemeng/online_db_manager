@@ -3,6 +3,7 @@
         <div class="ibox-content">
             <a class="menuid btn btn-primary btn-sm" href="javascript:location.reload()">刷新</a>
             <a class="menuid btn btn-primary btn-sm" href="javascript:history.go(-1)">返回</a> &nbsp;
+            <a class="menuid btn btn-primary btn-sm" href="javascript:exportWord()">导出</a> &nbsp;
             <div class="file-manager">
                 <h5><strong>{{$db}}</strong> 的表如下</h5>
                 <ul class="folder-list" style="padding: 0">
@@ -77,4 +78,16 @@
             animationHover(this, "pulse")
         })
     });
+
+    function exportWord(){
+        let conn_name = "{{$conn_name}}";
+        let db = "{{$db}}";
+        $.post("{{route("dbs.export")}}",{conn_name:conn_name,db:db,_token:'{{csrf_token()}}'},function(res){
+            if(res.code == 200){
+                layer.msg('导出成功');
+            }else{
+                layer.msg('导出失败');
+            }
+        },'json');
+    }
 </script>

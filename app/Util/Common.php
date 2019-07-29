@@ -11,6 +11,8 @@ namespace App\Util;
 
 use App\Models\DbConnection;
 use App\Util\PHPMailer\PHPMailer\PHPMailer;
+use PhpOffice\PhpWord\IOFactory;
+use PhpOffice\PhpWord\PhpWord;
 
 class Common
 {
@@ -42,7 +44,7 @@ class Common
      * @return bool
      * @throws \Exception
      */
-    public static function sendEmail(string $to, string $name, string $content,string $subject = "SQL申请处理结果")
+    public static function sendEmail(string $to, string $name, string $content, string $subject = "SQL申请处理结果")
     {
         $mail = new PHPMailer(true);
         try {
@@ -81,6 +83,63 @@ class Common
                 ->setClassName("ApplyQueue")
                 ->setData(['email' => $email, 'msg' => $msg, 'name' => $name])
                 ->run();
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
+        }
+
+    }
+
+    /**
+     * 生成word文档
+     * @param $tables
+     * @param $tbinfo
+     * @return bool
+     * @throws \Exception
+     */
+    public static function generateWord($tables, $tbinfo)
+    {
+        try {
+            $phpWord = new PhpWord();
+            $section = $phpWord->addSection();
+            $styleTable = ['borderSize' => 6, 'borderColor' => '000000', 'cellMargin' => 80];//表格样式
+            $fontStyle = ['align' => 'center'];//文字样式
+            $i = 1;
+            foreach ($tables as $t => $v) {
+                $fontStyleName = 'oneUserDefinedStyle';
+                $phpWord->addFontStyle(
+                    $fontStyleName,
+                    array('name' => '华文仿宋', 'size' => 15, 'color' => '1B2232', 'bold' => true)
+                );
+                $section->addText(
+                    $v ? ($i . "、" . $t . "(" . $v . ")表结构如下") : ($i . "、" . $t . "表结构如下"),
+                    $fontStyleName
+                );
+                $section->addText(PHP_EOL);
+                $phpWord->addTableStyle('table_' . $i, $styleTable);//定义表格样式
+                $table = $section->addTable('table_' . $i);
+                $table->addRow(400);
+                $table->addCell(2000)->addText('字段', $fontStyle);
+                $table->addCell(2000)->addText('数据类型', $fontStyle);
+                $table->addCell(2000)->addText('索引', $fontStyle);
+                $table->addCell(2000)->addText('是否为空', $fontStyle);
+                $table->addCell(2000)->addText('默认值', $fontStyle);
+                $table->addCell(2000)->addText('注释', $fontStyle);
+                foreach ($tbinfo[$t] as $item) {
+                    $table->addRow(1000);
+                    $table->addCell(2000)->addText($item->column_name, $fontStyle);
+                    $table->addCell(2000)->addText($item->column_type, $fontStyle);
+                    $table->addCell(2000)->addText($item->column_key, $fontStyle);
+                    $table->addCell(2000)->addText($item->is_nullable, $fontStyle);
+                    $table->addCell(2000)->addText($item->COLUMN_default, $fontStyle);
+                    $table->addCell(2000)->addText($item->column_comment, $fontStyle);
+                }
+                $section->addText(PHP_EOL);
+                $i++;
+            }
+
+            $objWriter = IOFactory::createWriter($phpWord, 'Word2007');
+            $objWriter->save('DataStructure.docx');
+            return true;
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         }

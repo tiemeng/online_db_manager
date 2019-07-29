@@ -41,6 +41,7 @@ Route::middleware(['auth:admin','rbac'])->group(function (){
 
     Route::get("DBs/index","DBsController@index")->name("dbs.list");
     Route::get("DBs/tables","DBsController@tables")->name("dbs.tables");
+    Route::post("DBs/export","DBsController@export")->name("dbs.export");
 
 
     Route::resource('dbconn','DbConnectionController',['only'=>['index','create','store','update','edit']]);
