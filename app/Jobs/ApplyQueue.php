@@ -25,8 +25,8 @@ class ApplyQueue extends BaseJobs
                     echo $this->_id."处理成功".PHP_EOL;
                 }
             }catch(\Exception $e){
+                \Log::error($e->getMessage());
                 //TODO:记录错误日志
-                \Log::debug($e->getMessage());
             }
 
         }

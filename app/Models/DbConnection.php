@@ -53,7 +53,7 @@ class DbConnection extends Model
             'strict' => true,
             'engine' => null,
             'schema' => '{$item['schema']}'
-        ],
+        ],\n
 EOT;
             $connections .= $str;
         }

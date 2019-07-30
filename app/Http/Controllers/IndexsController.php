@@ -4,9 +4,6 @@ namespace App\Http\Controllers;
 
 
 
-use App\Services\IndexCountService;
-use App\Util\Common;
-
 class IndexsController extends Controller
 {
     /**

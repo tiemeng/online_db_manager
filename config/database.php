@@ -32,56 +32,6 @@ return [
     */
 
     'connections' => [
-        "rock_account_test"=> [
-            'driver' => 'mysql',
-            'host' => '172.10.1.32',
-            'port' => '3306',
-            'database' => 'rock_account_test',
-            'username' => 'rock_account_test',
-            'password' => 'Jushi@QAZ123WSX',
-            'charset' => 'utf8mb4',
-            'prefix' => '',
-            'strict' => true,
-            'engine' => null,
-            'schema' => ''
-        ],        "big_data"=> [
-            'driver' => 'mysql',
-            'host' => '127.0.0.1',
-            'port' => '3306',
-            'database' => 'big_data',
-            'username' => 'root',
-            'password' => '123456',
-            'charset' => 'utf8mb4',
-            'prefix' => '',
-            'strict' => true,
-            'engine' => null,
-            'schema' => ''
-        ],        "b_test"=> [
-            'driver' => 'mysql',
-            'host' => '172.10.1.32',
-            'port' => '3306',
-            'database' => 'know_loan_test',
-            'username' => 'know_loan_test',
-            'password' => 'know_loan_test_pwd',
-            'charset' => 'utf8mb4',
-            'prefix' => '',
-            'strict' => true,
-            'engine' => null,
-            'schema' => ''
-        ],        "deposit_uat"=> [
-            'driver' => 'pgsql',
-            'host' => '47.92.87.56',
-            'port' => '5432',
-            'database' => 'deposit',
-            'username' => 'rock_uat',
-            'password' => 'rock_uat_pwd',
-            'charset' => 'utf8',
-            'prefix' => '',
-            'strict' => true,
-            'engine' => null,
-            'schema' => ''
-        ],
-
 
         'sqlite' => [
             'driver' => 'sqlite',

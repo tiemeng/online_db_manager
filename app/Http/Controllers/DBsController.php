@@ -49,7 +49,7 @@ class DBsController extends BaseController
     {
         $db = $request->db;
         $conn_name = $request->conn_name;
-        $dbInfoModel = new DbInfo($conn_name);
+        $dbInfoModel = new DbInfo($conn_name,$db);
         $tables = $dbInfoModel->getTables($db);
         $tablesInfo = [];
         foreach ($tables as $table) {

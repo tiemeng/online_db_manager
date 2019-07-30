@@ -16,9 +16,9 @@ use Illuminate\Http\Request;
 
 class DbConnectionController extends BaseController
 {
-    protected $_diverType = ['MySQL'];
+//    protected $_diverType = ['MySQL'];
 
-//    protected $_diverType = ['MySQL', "PGSQL"];
+    protected $_diverType = ['MySQL', "PGSQL"];
 
     public function index(Request $request)
     {
@@ -47,6 +47,9 @@ class DbConnectionController extends BaseController
             $requestData = $request->all();
             unset($requestData['_token']);
             $requestData['driver'] = strtolower($requestData['driver']);
+            if($requestData['driver'] == 'pgsql'){
+                $requestData['schema'] = 'public';
+            }
             !DbConnection::insertData($requestData) && DbConnection::insertData($requestData);
             flash('添加成功')->success()->important();
             Common::updateDatabaseFile();

@@ -18,7 +18,7 @@
                         <select name="driver" class="form-control">
                             <option value="">请选择</option>
                             @foreach($driver as $value)
-                                <option @if($value==$info['driver']) selected @endif value="{{$value}}">{{$value}}</option>
+                                <option @if(strtolower($value)==$info->driver) selected @endif value="{{$value}}">{{$value}}</option>
                             @endforeach
                         </select>
                         @if ($errors->has('driver'))

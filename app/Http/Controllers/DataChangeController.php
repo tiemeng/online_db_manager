@@ -18,8 +18,8 @@ use Illuminate\Support\Facades\Auth;
 class DataChangeController extends BaseController
 {
 
-//    private $_db_type = ['MYSQL', 'PGSQL'];
-    private $_db_type = ['MYSQL'];
+    private $_db_type = ['MYSQL', 'PGSQL'];
+//    private $_db_type = ['MYSQL'];
     private $_status = [1 => '待审核', '审核通过', '驳回', '已执行'];
 
     /**
@@ -159,7 +159,7 @@ class DataChangeController extends BaseController
      * @return array
      */
     public function getTables(string $conn,string $db){
-        $dbInfo = new DbInfo($conn);
+        $dbInfo = new DbInfo($conn,$db);
         return $this->reJson(200,'success',$dbInfo->getTablesByDb($db));
 
     }

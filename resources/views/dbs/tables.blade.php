@@ -46,10 +46,14 @@
                                 @foreach($infos as $info)
                                 <tr>
                                     <td width="15%">{{$info->column_name}}</td>
-                                    <td width="25%">{{$info->column_type}}</td>
+                                    <td width="25%">{{strpos(str_replace(['character varying','without time zone'],['varchar',''],$info->column_type),'nextval')}}</td>
                                     <td width="8%">{{$info->column_key}}</td>
                                     <td width="12%">{{$info->is_nullable}}</td>
-                                    <td width="15%">{{$info->COLUMN_default}}</td>
+                                    <td width="15%">@php
+                                    $default = str_replace(['::character varying',"'",'::jsonb','::timestamp without time zone'],"",$info->column_default);
+                                    echo strpos($default,'nextval') !== false ? '' :$default;
+                                    @endphp
+                                    </td>
                                     <td width="25%">{{$info->column_comment}}</td>
                                 </tr>
                                 @endforeach

@@ -84,6 +84,7 @@ class Common
                 ->setData(['email' => $email, 'msg' => $msg, 'name' => $name])
                 ->run();
         } catch (\Exception $e) {
+            \Log::info($e->getMessage());
             throw new \Exception($e->getMessage());
         }
 
