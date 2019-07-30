@@ -129,7 +129,7 @@ ORDER BY a.relname");
                 "column_type",
                 "column_key",
                 "is_nullable",
-                "COLUMN_default",
+                "column_default",
                 "column_comment"
             ])->get();
         }else{

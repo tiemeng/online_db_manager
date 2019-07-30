@@ -159,8 +159,14 @@ class DataChangeController extends BaseController
      * @return array
      */
     public function getTables(string $conn,string $db){
-        $dbInfo = new DbInfo($conn,$db);
-        return $this->reJson(200,'success',$dbInfo->getTablesByDb($db));
+        $driver = DbConnection::getDriverByConn($conn);
+        if($driver == "mysql"){
+            $dbInfoModel = new DbInfo($conn);
+        }else{
+            $dbInfoModel = new DbInfo($conn,$db);
+        }
+        $tables = $dbInfoModel->getTablesByDb($db);
+        return $this->reJson(200,'success',$tables);
 
     }
 

@@ -37,7 +37,7 @@
                             <option value="" >请选择</option>
                             @foreach($dbs as $db)
                             @foreach($db as $k=>$v)
-                            <option @if($info->db_name == $v) selected @endif data-con="{{$k}}" value="{{$v}}">{{$v}}</option>
+                            <option @if($info->db_name == $k) selected @endif data-con="{{$v}}" value="{{$k}}">{{$k}}</option>
                             @endforeach
                             @endforeach
                         </select>

@@ -46,7 +46,9 @@ class Common
      */
     public static function sendEmail(string $to, string $name, string $content, string $subject = "SQL申请处理结果")
     {
+
         $mail = new PHPMailer(true);
+
         try {
             $mail->isSMTP();
             $mail->Host = env('EMAIL_HOST');
@@ -63,6 +65,7 @@ class Common
 
             return $mail->send();
         } catch (\Exception $e) {
+            \Log::debug(var_export($e,true));
             throw new \Exception("Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
         }
     }

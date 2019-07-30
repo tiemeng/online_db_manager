@@ -68,4 +68,8 @@ EOT;
         }
         return $data;
     }
+
+    public static function getDriverByConn(string $conn_name){
+        return self::where(['conn_name'=>$conn_name])->value('driver');
+    }
 }

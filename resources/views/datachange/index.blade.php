@@ -44,7 +44,7 @@
                             <td class="text-center">{{$item->db_name}}</td>
                             <td>{{$item->table_name}}</td>
                             <td title="点击查看详情" data-backdrop="false"  data-toggle="modal" data-target="#myModal{{$item->id}}">
-                                {{mb_substr($item->exc_sql,0,40)}}
+                                {{(mb_strlen($item->exc_sql) > 40) ? mb_substr($item->exc_sql,0,40)."..." : $item->exc_sql}}
 
                             </td>
                             <td>{{$item->apply_user}}</td>
