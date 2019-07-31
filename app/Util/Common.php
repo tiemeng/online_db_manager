@@ -51,11 +51,13 @@ class Common
 
         try {
             $mail->isSMTP();
+            $mail->CharSet = "utf-8"; //utf-8;
+            $mail->Encoding = "base64";
             $mail->Host = env('EMAIL_HOST');
             $mail->SMTPAuth = true;
             $mail->Username = env('EMAIL_USERNAME');
             $mail->Password = env('EMAIL_PASSWORD');
-            $mail->SMTPSecure = 'tls';
+            $mail->SMTPSecure = env('EMAIL_SMTPSECURE');
             $mail->Port = env('EMAIL_PORT');
             $mail->setFrom(env('EMAIL_USERNAME'));
             $mail->addAddress($to, $name);
@@ -65,7 +67,7 @@ class Common
 
             return $mail->send();
         } catch (\Exception $e) {
-            \Log::debug(var_export($e,true));
+            \Log::debug($mail->ErrorInfo);
             throw new \Exception("Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
         }
     }
