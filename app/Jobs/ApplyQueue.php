@@ -16,10 +16,11 @@ class ApplyQueue extends BaseJobs
     {
         $email = $this->args['email'] ?? "";
         $msg = $this->args['msg'] ?? "";
-        $name = $this->argsp['name'] ?? "";
+        $name = $this->args['name'] ?? "";
+        $attach = $this->args['attachment'] ?? false;
         if($email && $msg){
             try{
-                if(Common::sendEmail($email,$name,$msg)){
+                if(Common::sendEmail($email,$name,$msg,'SQL申请处理结果',$attach)){
                     $this->_flag = true;
                     $this->_id = $this->args['_id'] ?? "";
                     echo $this->_id."处理成功".PHP_EOL;

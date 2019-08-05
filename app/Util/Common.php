@@ -11,6 +11,7 @@ namespace App\Util;
 
 use App\Models\DbConnection;
 use App\Util\PHPMailer\PHPMailer\PHPMailer;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpWord\IOFactory;
 use PhpOffice\PhpWord\PhpWord;
 
@@ -41,14 +42,20 @@ class Common
      * @param string $name
      * @param string $content
      * @param string $subject
+     * @param bool $path
      * @return bool
      * @throws \Exception
      */
-    public static function sendEmail(string $to, string $name, string $content, string $subject = "SQL申请处理结果")
-    {
+    public static function sendEmail(
+        string $to,
+        string $name,
+        string $content,
+        string $subject = "SQL申请处理结果",
+        bool $path = false
+    ) {
 
         $mail = new PHPMailer(true);
-
+        $attachFile = public_path().'/demo.xlsx';
         try {
             $mail->isSMTP();
             $mail->CharSet = "utf-8"; //utf-8;
@@ -62,6 +69,9 @@ class Common
             $mail->setFrom(env('EMAIL_USERNAME'));
             $mail->addAddress($to, $name);
             $mail->isHTML(true);
+            if($path){
+                $mail->addAttachment($attachFile);
+            }
             $mail->Subject = $subject;
             $mail->Body = $content;
 
@@ -73,20 +83,18 @@ class Common
     }
 
     /**
-     * 执行sql发送email队列
-     * @param string $email
-     * @param string $name
-     * @param string $msg
+     * 发送邮件消息队列
+     * @param array $data
      * @return string
      * @throws \Exception
      */
-    public static function applyNotice(string $email, string $name, string $msg)
+    public static function applyNotice(array $data)
     {
         try {
             return ReQueue::getInstance()
                 ->setName("sendEmail")
                 ->setClassName("ApplyQueue")
-                ->setData(['email' => $email, 'msg' => $msg, 'name' => $name])
+                ->setData($data)
                 ->run();
         } catch (\Exception $e) {
             \Log::info($e->getMessage());
@@ -149,6 +157,78 @@ class Common
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         }
+
+    }
+
+    /**
+     * 导出excel
+     * @param array $data
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
+     */
+    public static function exportExcel(array $data)
+    {
+        if (empty($data)) {
+            throw new \Exception("导出数据不能为空");
+        }
+        set_time_limit(0);
+        ini_set('memory_limit', -1);
+        $title = array_keys($data[0]);
+
+        $newExcel = new Spreadsheet();  //创建一个新的excel文档
+        $objSheet = $newExcel->getActiveSheet();  //获取当前操作sheet的对象
+        $objSheet->setTitle('管理员表');  //设置当前sheet的标题
+        $count = count($title);
+
+        //设置宽度为true,不然太窄了
+        $start = $i = 65;
+        $end = 90;
+        foreach ($title as $k => $value) {
+            $col = chr($i);
+            if ($i > $end) {
+                $col .= chr($start + ($i - $end) - 1);
+            }
+            $objSheet->getColumnDimension($col)->setAutoSize(true);
+            $objSheet->setCellValue($col . "1", $value);
+            $i++;
+        }
+
+
+        //第二行起，每一行的值,setCellValueExplicit是用来导出文本格式的。
+        //->setCellValueExplicit('C' . $k, $val['admin_password']PHPExcel_Cell_DataType::TYPE_STRING),可以用来导出数字不变格式
+        foreach ($data as $k => $val) {
+            $k = $k + 2;
+            for ($j = $start; $j < $start + $count; $j++) {
+                $col = chr($j);
+                if ($j > $end) {
+                    $col .= chr($start + ($j - $end) - 1);
+                }
+                $objSheet->setCellValue($col . $k, $val[$title[$j - 65]]);
+            }
+        }
+
+        $format = 'Xlsx';
+        // $format只能为 Xlsx 或 Xls
+        if ($format == 'Xlsx') {
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        } elseif ($format == 'Xls') {
+            header('Content-Type: application/vnd.ms-excel');
+        }
+
+        header("Content-Disposition: attachment;filename="
+            . "管理员表" . date('Y-m-d') . '.' . strtolower($format));
+        header('Cache-Control: max-age=0');
+        $objWriter = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($newExcel, $format);
+
+        $dir = "./demo.xlsx";
+        //通过php保存在本地的时候需要用到
+        $objWriter->save($dir);
+
+        header('Cache-Control: max-age=1');
+//        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
+        header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+        header('Pragma: public'); // HTTP/1.0
 
     }
 

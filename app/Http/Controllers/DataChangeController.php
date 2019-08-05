@@ -135,7 +135,12 @@ class DataChangeController extends BaseController
             $where = ['id' => $id];
             DataChange::updateData($updateData, $where);
             $msg = $status == 2 ? "你的sql申请已审核通过" : "你的sql申请被驳回";
-            Common::applyNotice($admin->email,$admin->name,$msg);
+            $queueData = [
+                'email' => $admin->email,
+                'name' => $admin->name,
+                'msg' => $msg
+            ];
+            Common::applyNotice($queueData);
             return $this->reJson(200,'审核成功');
         } catch (\Exception $e) {
             return $this->reJson(102,'审核失败');
@@ -189,15 +194,35 @@ class DataChangeController extends BaseController
             $sql = $info->exc_sql;
             $res = $dbInfoModel->exec($sql);
             if($res){
+                $queueData = [
+                    'email' => $admin->email,
+                    'name' => $admin->name,
+                    'msg' => '你申请的sql已经处理完成'
+                ];
+                if(stripos(substr($sql,0,10),'select') !== false){
+                    set_time_limit(0);
+                    Common::exportExcel($res);
+                    $queueData = [
+                        'email' => $admin->email,
+                        'name' => $admin->name,
+                        'msg' => '你申请的sql已经处理完成,抽取数据详见附件',
+                        'attachment' => true
+                    ];
+                }
                 DataChange::updateData(['status'=>4],['id'=>$id]);
-                Common::applyNotice($admin->email,$admin->name,"你申请的sql已经处理完成");
+                Common::applyNotice($queueData);
                 return $this->reJson(200,'执行成功');
             }
 
             return $this->reJson(101,'执行失败');
         }catch (\Exception $e){
             DataChange::updateData(['status'=>1,'fail_reason'=>$e->getMessage()],['id'=>$id]);
-            Common::applyNotice($admin->email,$admin->name,"你申请的sql处理失败，请重新编辑。失败原因：".$e->getMessage());
+            $queueData = [
+                'email' => $admin->email,
+                'name' => $admin->name,
+                'msg' => "你申请的sql处理失败，请重新编辑。失败原因：".$e->getMessage()
+            ];
+            Common::applyNotice($queueData);
             return $this->reJson(101,$e->getMessage());
         }
 

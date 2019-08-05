@@ -19,10 +19,10 @@ class DbInfo extends Model
     public function __construct(string $connection, $db = null, array $attributes = [])
     {
         $this->_drive = \Config::get('database.connections.' . $connection . '.driver');
-        if($db == null){
-            if($this->_drive == 'mysql'){
+        if ($db == null) {
+            if ($this->_drive == 'mysql') {
                 $db = 'information_schema';
-            }else{
+            } else {
                 $db = 'postgres';
             }
         }
@@ -94,12 +94,12 @@ ORDER BY a.relname");
      */
     public function getTables(string $db)
     {
-        if($this->_drive == 'mysql'){
+        if ($this->_drive == 'mysql') {
             return $this->_db->table("tables")->where(['table_schema' => $db])->select([
                 'table_name',
                 'table_comment'
             ])->get()->toArray();
-        }else{
+        } else {
             return $this->_db->select("SELECT
 a.relname AS table_name,
 b.description AS table_comment
@@ -120,7 +120,7 @@ ORDER BY a.relname");
      */
     public function tablesInfo(string $db, string $table)
     {
-        if($this->_drive == 'mysql'){
+        if ($this->_drive == 'mysql') {
             return $this->_db->table("COLUMNS")->where([
                 'table_schema' => $db,
                 'table_name' => $table
@@ -132,7 +132,7 @@ ORDER BY a.relname");
                 "column_default",
                 "column_comment"
             ])->get();
-        }else{
+        } else {
             return collect($this->_db->select("SELECT
 	A.attname AS column_name,
 	format_type ( A.atttypid, A.atttypmod ) AS column_type,
@@ -166,14 +166,17 @@ WHERE
     }
 
     /**
-     * 执行相对应的sql
+     * 执行sql语句
      * @param string $sql
-     * @return bool
+     * @return array|bool
      * @throws \Exception
      */
     public function exec(string $sql)
     {
         try {
+            if (stripos(substr($sql, 0, 10), 'select') !== false) {
+                return json_decode(json_encode($this->_db->select($sql)),true);
+            }
             return $this->_db->statement($sql);
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
